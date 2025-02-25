@@ -1,7 +1,9 @@
 # Blockchain-Analytics
 
 ## Overview
-This repository contains a collection of articles and SQL queries designed for blockchain data analysis. The queries help extract insights about network activity, user behavior, and transaction patterns across various blockchain networks.
+This repository contains a collection of SQL queries designed for blockchain data analysis. The queries help extract insights about network activity, user behavior, and transaction patterns across various blockchain networks.
+
+These queries are built with Dune Analytics in mind.
 
 ## Purpose
 This repository serves as a toolkit for blockchain analysts, researchers, and developers who need to:
