@@ -1,4 +1,4 @@
--- https://dune.com/queries/4782325
+/* https://dune.com/queries/4782325 */
 WITH wallet_transactions AS (
   SELECT
     tx_hash AS transaction_hash,
@@ -9,7 +9,7 @@ WITH wallet_transactions AS (
     block_time AS datetime
   FROM tokens_base.transfers
   WHERE
-    blockchain = 'base' -- AND NOT symbol IN ('ETH', 'WETH', 'USDC', 'cbETH')
+    blockchain = 'base'
 ), high_value_wallets AS (
   SELECT
     transaction_hash,
@@ -48,7 +48,6 @@ JOIN wallet_balances AS wb
   ON hw.wallet_address = wb.wallet_address AND hw.token = wb.token
 WHERE
   hw.transaction_amount_usd > 1000000
+  AND NOT TRY_CAST(hw.wallet_address AS VARCHAR) IN ('0x3304e22ddaa22bcdc5fca2269b418046ae7b566a', 'address2', 'address3')
 ORDER BY
   hw.transaction_amount_usd DESC
--- LIMIT
-    -- 1000
