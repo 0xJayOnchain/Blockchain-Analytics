@@ -50,3 +50,5 @@ WHERE
   hw.transaction_amount_usd > 1000000
 ORDER BY
   hw.transaction_amount_usd DESC
+LIMIT
+    1000
