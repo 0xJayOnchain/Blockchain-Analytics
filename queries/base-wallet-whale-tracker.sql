@@ -9,13 +9,13 @@ WITH wallet_transactions AS (
     block_time AS datetime
   FROM tokens_base.transfers
   WHERE
-    blockchain = 'base' -- AND NOT symbol IN ('ETH', 'WETH', 'USDC', 'cbETH')
+    blockchain = 'base'
 ), high_value_wallets AS (
   SELECT
     transaction_hash,
     wallet_address,
-    token,
     destination_address,
+    token,
     transaction_amount_usd,
     datetime
   FROM wallet_transactions
@@ -35,14 +35,14 @@ WITH wallet_transactions AS (
 SELECT
   hw.transaction_hash,
   hw.wallet_address,
-  hw.token,
   hw.destination_address,
+  hw.token,
   hw.transaction_amount_usd,
-  hw.datetime,
   wb.before_balance,
   (
     wb.after_balance_with_tx - hw.transaction_amount_usd
-  ) AS after_balance
+  ) AS after_balance,
+  hw.datetime
 FROM high_value_wallets AS hw
 JOIN wallet_balances AS wb
   ON hw.wallet_address = wb.wallet_address AND hw.token = wb.token
@@ -50,5 +50,5 @@ WHERE
   hw.transaction_amount_usd > 1000000
 ORDER BY
   hw.transaction_amount_usd DESC
-LIMIT
-    1000
+-- LIMIT
+    -- 1000
