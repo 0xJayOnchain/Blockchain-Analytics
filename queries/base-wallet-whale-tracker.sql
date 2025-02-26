@@ -9,13 +9,13 @@ WITH wallet_transactions AS (
     block_time AS datetime
   FROM tokens_base.transfers
   WHERE
-    blockchain = 'base'
+    blockchain = 'base' -- AND NOT symbol IN ('ETH', 'WETH', 'USDC', 'cbETH')
 ), high_value_wallets AS (
   SELECT
     transaction_hash,
     wallet_address,
-    destination_address,
     token,
+    destination_address,
     transaction_amount_usd,
     datetime
   FROM wallet_transactions
@@ -36,8 +36,8 @@ SELECT
   hw.transaction_hash,
   hw.wallet_address,
   hw.destination_address,
-  hw.token,
   hw.transaction_amount_usd,
+  hw.token,
   wb.before_balance,
   (
     wb.after_balance_with_tx - hw.transaction_amount_usd
