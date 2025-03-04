@@ -40,8 +40,12 @@ WITH first_transactions AS (
     SUM(CASE WHEN user_type = 'New User' THEN tx_count ELSE 0 END) AS new_user_txns,
     SUM(CASE WHEN user_type = 'Old User' THEN tx_count ELSE 0 END) AS old_user_txns,
     SUM(tx_count) AS total_txns,
-    COUNT(DISTINCT CASE WHEN tx_count > 0 THEN wallet_address END) AS active_addresses
-  FROM tx_by_user_age
+    COUNT(DISTINCT CASE WHEN tx_count > 0 THEN wallet_address END) AS active_addresses,
+    SUM(t.gas_used) AS daily_gas_used,
+    SUM(t.gas_used) / 1e9 AS daily_gas_used_gwei,
+    SUM(t.gas_used) / 1e18 AS daily_gas_used_eth
+  FROM tx_by_user_age AS tx
+  JOIN base.transactions AS t ON tx.time_ = DATE_TRUNC('day', t.block_time) AND tx.wallet_address = t."from"
   GROUP BY 1
 ), monthly_data AS (
   SELECT
@@ -62,6 +66,9 @@ SELECT
   d.old_user_txns AS "Old User Transactions",
   d.total_txns AS "Daily Transactions",
   d.active_addresses AS "Daily Active Addresses",
+  d.daily_gas_used AS "Daily Gas Used",
+  d.daily_gas_used_gwei AS "Daily Gas Used (Gwei)",
+  d.daily_gas_used_eth AS "Daily Gas Used (ETH)",
   CASE
     WHEN LAG(d.active_addresses, 7) OVER (ORDER BY n.time_) > 0
     THEN ROUND(
